@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Jul/Nyår Projekt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <script src="jquery/jquery-1.12.4.js"></script>
+</head>
+<body>
+    
+    <img class="tree" id="tree" src="bilder/christmas-tree.png" alt="">
+    <img class="tree" id="tree2" src="bilder/christmas-tree.png" alt="">
+
+    <div class="bg-color"></div>  
+
+
+    <div class="container"> 
+        <div id="text">
+            <p id="days" class="days"> </p>  
+            <p id="days2" class="days"> </p> 
+            <audio id="ljud" controls style=" width: 260px; height: 25px">
+                    <source src="ljud/julLåt.mp3" type="audio/mp3">
+            </audio>
+        </div>
+        
+
+        <div id="grid" class="grid"></div>
+    </div>
+
+    <ul id="lightrope"></ul>
+
+    
+    
+
+
+
+    <script>
+        // Skapar alla list element åt jul ljusen
+        function createList() {
+            for (var i = 0; i < 41; i++){
+                var list = i;
+                
+                list = document.createElement('li');
+                document.getElementById('lightrope').appendChild(list);
+            }
+        }
+        createList();
+
+        // Hämtar datum för idag, julafton och nyår
+        myDate = new Date(); 
+        xmas = Date.parse("Dec 25, "+ myDate.getFullYear()) 
+        today = Date.parse(myDate) 
+        newYears=Date.parse("Dec 31, "+ myDate.getFullYear()) 
+        
+        // Räknar ut när julafton och nyår är
+        daysToChristmas=Math.round((xmas-today)/(1000*60*60*24))
+        daysToNewYear=Math.round((newYears-today)/(1000*60*60*24)) 
+
+        if (daysToChristmas==0) 
+        $('#days').text("Det är Julafton!! God Jul!");
+
+        if (daysToChristmas<0) 
+        $('#days').text("Julaftopn var "+-1*(daysToChristmas)+" dagar sen.");
+
+        if (daysToChristmas>0) 
+        $('#days').text(daysToChristmas+" dagar till Julafton!");
+
+        if (daysToNewYear>0) 
+        $('#days2').text((daysToNewYear + 1)+" dagar till Nyår!");
+
+        // Funktionerna som skapar snön och dens hastighet, mängd av snö
+        function snow(num, speed) {
+            if (num > 0) {
+                setTimeout(function () {
+                    $('#drop_' + randomInt(1, 250)).addClass('animate');
+                    num--;
+                    snow(num, speed);
+                }, speed);
+            }
+        };
+        // -||-
+        function snowDrop(num, position) {
+            if (num > 0) {
+                var drop = '<div class="drop snow" id="drop_' + num + '"></div>';
+
+                $('body').append(drop);
+                $('#drop_' + num).css('left', position);
+                num--;
+                snowDrop(num, randomInt(60, 1860));
+            }
+        };
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        };
+        // Skapar själva snön utifrån funktionerna 
+        snowDrop(150, randomInt(1035, 1280));
+        snow(150, 150);
+
+        const daysArray = [];
+        const randomDaysArray = [];
+        const grid = document.getElementById('grid');
+
+        // Array med alla bilder i julkalendern
+        const images = [
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/ball.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/ball2.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/hat.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/snowman.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/snowman2.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/star.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/star2.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/stocking.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/stocking2.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/tree.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/tree2.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/snowflake.svg',
+        'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2175134/holly.svg'
+            
+        ];
+        const days = 24;
+        // Skapar en array med alla 24 dagar
+        for (let i=1; i<=days; i+=1) {
+        daysArray.push(i);
+        }
+
+        let randomDay = 0;
+        // Hämtar dagens datum i 2-siffrig form
+        const tod = new Date().getDate();
+
+        for (let i=1; i <= days; i+=1) {
+            // Väljer en slumpmässig dag mellan 1-24
+            randomDay = Math.floor(Math.random() * daysArray.length);
+            
+            let randomImageNum = Math.floor(Math.random()*images.length);
+            
+            // Skapar kalender "griden" och lägger in numer och bilder
+            grid.innerHTML += `
+                <div class="day">
+                <span class="door door-${daysArray[randomDay]}">
+                    <span class="number">${daysArray[randomDay]}</span>
+                </span>
+                <div class="bg-img" style="background-image: url(${images[randomImageNum]})"></div>
+                </div>
+            `;
+            // Fyller i en ny array slumpmässiga dagar
+            randomDaysArray.push(daysArray[randomDay]);
+            
+            // Tar bort den slumpmässiga dagen så den inte kan användas igen
+            daysArray.splice(randomDay, 1);
+        }
+        // Lägger till en tom footer som en margin variant om man behöver den någon gång
+        grid.innerHTML += '<div class="footer"></div>'
+
+        let doors = document.getElementsByClassName('door');
+
+        // För alla rutor läggs det till ett click event med klassen "open"
+        for (let i=0; i<=days; i+=1) {
+            if (randomDaysArray[i] <= tod) {
+                doors[i].addEventListener('click', () => {
+                doors[i].classList.add('open');
+                });
+            }
+        }
+
+    </script>
+</body>
+</html>
