@@ -1,8 +1,0 @@
-KravSpecifikation
-
-- Tema Jul/nyår
-- HTML CSS JS jQuery
-- Färschema rött, grönt, vitt
-- Snö, Julgranar, Julkalender
-- Nedräkning till Jul & Nyår
-- Jullåt
